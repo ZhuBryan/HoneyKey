@@ -4,9 +4,9 @@ import json
 import os
 import sqlite3
 import uuid
-from contextlib import asynccontextmanager, contextmanager
+from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
-from typing import Any, AsyncGenerator, Generator, List, Optional
+from typing import Any, Generator, List, Optional
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request
@@ -48,15 +48,7 @@ def load_settings() -> Settings:
 
 settings = load_settings()
 
-
-@asynccontextmanager
-async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
-    app.state.settings = load_settings()
-    init_db()
-    yield
-
-
-app = FastAPI(title="HoneyKey Backend", lifespan=lifespan)
+app = FastAPI(title="HoneyKey Backend")
 
 app.add_middleware(
     CORSMiddleware,
@@ -130,6 +122,12 @@ def init_db() -> None:
         )
 
 
+@app.on_event("startup")
+def on_startup() -> None:
+    app.state.settings = load_settings()
+    init_db()
+
+
 class Incident(BaseModel):
     id: int
     key_id: str
@@ -162,6 +160,8 @@ class AIReportResponse(BaseModel):
     summary: str
     evidence: List[str]
     recommended_actions: List[str]
+    executive_report: Optional[str] = None
+    technical_report: Optional[str] = None
 
 
 def utc_now() -> datetime:
@@ -183,15 +183,15 @@ def extract_json_payload(text: str) -> dict:
 
 
 def validate_report_payload(payload: dict, incident_id: int) -> AIReportResponse:
-    expected_keys = {
+    required_keys = {
         "incident_id",
         "severity",
         "summary",
         "evidence",
         "recommended_actions",
     }
-    if set(payload.keys()) != expected_keys:
-        raise ValueError("Unexpected JSON keys in report")
+    if not required_keys.issubset(set(payload.keys())):
+        raise ValueError("Missing required JSON keys in report")
     if not isinstance(payload["incident_id"], int):
         raise ValueError("incident_id must be int")
     if payload["incident_id"] != incident_id:
@@ -208,6 +208,12 @@ def validate_report_payload(payload: dict, incident_id: int) -> AIReportResponse
         isinstance(item, str) for item in payload["recommended_actions"]
     ):
         raise ValueError("recommended_actions must be list of strings")
+    if "executive_report" in payload and payload["executive_report"] is not None:
+        if not isinstance(payload["executive_report"], str):
+            raise ValueError("executive_report must be string")
+    if "technical_report" in payload and payload["technical_report"] is not None:
+        if not isinstance(payload["technical_report"], str):
+            raise ValueError("technical_report must be string")
     return AIReportResponse(**payload)
 
 
@@ -217,6 +223,16 @@ def generate_gemini_report(prompt: str, api_key: str, model: str) -> str:
     client = genai.Client(api_key=api_key)
     response = client.models.generate_content(model=model, contents=prompt)
     return response.text or ""
+
+
+def normalize_recommended_actions(actions: List[str]) -> List[str]:
+    normalized = []
+    for action in actions:
+        if action.startswith("HoneyKey:") or action.startswith("User:"):
+            normalized.append(action)
+        else:
+            normalized.append(f"User: {action}")
+    return normalized
 
 
 def store_ai_report(
@@ -263,9 +279,19 @@ def build_prompt(incident: sqlite3.Row, events: list[sqlite3.Row]) -> str:
     ]
     return (
         "You are a SOC analyst. Summarize this incident for a report. "
-        "Return ONLY valid JSON. No markdown. No code fences. "
+        "Return ONLY valid JSON (no markdown, no code fences, no extra text). "
         "Required keys: incident_id (int), severity (string), summary (string), "
         "evidence (list of strings), recommended_actions (list of strings). "
+        "Additive keys allowed: executive_report (string), technical_report (string). "
+        "The executive_report must be plain-English, non-technical, explain impact/risk, "
+        "and state whether activity stayed within the honeypot environment. "
+        "The technical_report must include concrete evidence, metrics (event counts, burstiness, "
+        "enumeration patterns, user-agent observations), and inferred techniques with brief "
+        "explanations. Both reports must be consistent with each other and the evidence. "
+        "Clearly distinguish HoneyKey capabilities (telemetry, grouping, analysis, reports) "
+        "from user actions (blocking IPs, revoking creds, firewall/WAF changes, external SIEMs). "
+        "Never claim HoneyKey performed external actions. "
+        "Each recommended_actions item must be prefixed with 'HoneyKey:' or 'User:'. "
         f"Incident: {json.dumps(incident_payload)}. "
         f"Recent events: {json.dumps(event_payloads)}."
     )
@@ -480,6 +506,13 @@ async def analyze_incident(incident_id: int, request: Request) -> AIReportRespon
         )
         payload = extract_json_payload(response_text)
         report = validate_report_payload(payload, incident_id)
+        report = report.model_copy(
+            update={
+                "recommended_actions": normalize_recommended_actions(
+                    report.recommended_actions
+                )
+            }
+        )
     except Exception as exc:
         with get_db() as conn:
             store_ai_report(

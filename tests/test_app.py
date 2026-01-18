@@ -3,8 +3,11 @@ import json
 import os
 import sqlite3
 import sys
+from pathlib import Path
 
 from fastapi.testclient import TestClient
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 
 def create_client(tmp_path):
@@ -109,7 +112,9 @@ def test_ai_report_clean_json(tmp_path, monkeypatch):
         "severity": "medium",
         "summary": "Honeypot token used.",
         "evidence": ["Bearer token matched honeypot"],
-        "recommended_actions": ["Review source IP"],
+        "recommended_actions": ["User: Review source IP"],
+        "executive_report": None,
+        "technical_report": None,
     }
 
     def fake_generate(prompt, api_key, model):
@@ -174,7 +179,9 @@ def test_ai_report_fenced_json(tmp_path, monkeypatch):
         "severity": "low",
         "summary": "Fenced JSON response handled.",
         "evidence": ["Fenced output"],
-        "recommended_actions": ["Monitor for repeats"],
+        "recommended_actions": ["User: Monitor for repeats"],
+        "executive_report": None,
+        "technical_report": None,
     }
 
     def fake_generate(prompt, api_key, model):
