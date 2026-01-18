@@ -1,20 +1,8 @@
-import { useState } from 'react';
-import { Search, Filter, Calendar, FileText, AlertTriangle, Download, Clock, ChevronRight } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Search, Filter, Calendar, FileText, AlertTriangle, Download, Clock, ChevronRight, RefreshCw } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-
-interface Report {
-  id: string;
-  title: string;
-  generatedDate: string;
-  incidentDate: string;
-  severity: 'critical' | 'high' | 'medium' | 'low';
-  status: 'new' | 'reviewed' | 'archived';
-  incidentCount: number;
-  threatLevel: string;
-  type: 'engineer';
-  summary: string;
-}
+import { getReports, type ReportListItem } from '../services/api';
 
 const fadeInUp = {
   initial: { opacity: 0, y: 60 },
@@ -33,81 +21,22 @@ export function ReportsInbox() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterSeverity, setFilterSeverity] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [reports, setReports] = useState<ReportListItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const reports: Report[] = [
-    {
-      id: 'RPT-2026-001',
-      title: 'Multiple API Key Exploitation Attempts Detected',
-      generatedDate: '2026-01-17T14:45:00Z',
-      incidentDate: '2026-01-17',
-      severity: 'high',
-      status: 'new',
-      incidentCount: 3,
-      threatLevel: 'Active Threats',
-      type: 'engineer',
-      summary: 'Three unauthorized access attempts detected across multiple honeypot keys. Two incidents remain active with high-severity threat actors.',
-    },
-    {
-      id: 'RPT-2026-002',
-      title: 'Automated Scanning Campaign from Eastern Europe',
-      generatedDate: '2026-01-15T09:22:00Z',
-      incidentDate: '2026-01-15',
-      severity: 'medium',
-      status: 'reviewed',
-      incidentCount: 7,
-      threatLevel: 'Contained',
-      type: 'engineer',
-      summary: 'Detected coordinated scanning activity targeting GitHub PAT tokens. All attempts blocked successfully.',
-    },
-    {
-      id: 'RPT-2026-003',
-      title: 'Low-Level Probing Activity - AWS Keys',
-      generatedDate: '2026-01-12T16:10:00Z',
-      incidentDate: '2026-01-12',
-      severity: 'low',
-      status: 'archived',
-      incidentCount: 2,
-      threatLevel: 'Resolved',
-      type: 'engineer',
-      summary: 'Minimal attempts on AWS honeypot credentials. Activity ceased after rate limiting.',
-    },
-    {
-      id: 'RPT-2026-004',
-      title: 'Critical: OpenAI API Key Breach Attempt',
-      generatedDate: '2026-01-10T11:33:00Z',
-      incidentDate: '2026-01-10',
-      severity: 'critical',
-      status: 'reviewed',
-      incidentCount: 1,
-      threatLevel: 'Neutralized',
-      type: 'engineer',
-      summary: 'Sophisticated attack on OpenAI honeypot key with advanced evasion techniques. Attacker profile created and shared with threat intelligence feeds.',
-    },
-    {
-      id: 'RPT-2026-005',
-      title: 'Weekly Summary: Honeypot Performance Analysis',
-      generatedDate: '2026-01-08T08:00:00Z',
-      incidentDate: '2026-01-01',
-      severity: 'low',
-      status: 'reviewed',
-      incidentCount: 12,
-      threatLevel: 'Informational',
-      type: 'engineer',
-      summary: 'Weekly aggregated report showing honeypot effectiveness metrics and ROI analysis.',
-    },
-    {
-      id: 'RPT-2026-006',
-      title: 'GitHub Token Scraping Bot Detected',
-      generatedDate: '2026-01-05T13:45:00Z',
-      incidentDate: '2026-01-05',
-      severity: 'medium',
-      status: 'archived',
-      incidentCount: 5,
-      threatLevel: 'Resolved',
-      type: 'engineer',
-      summary: 'Automated bot systematically testing GitHub tokens. Bot fingerprint captured and added to blocklist.',
-    },
-  ];
+  useEffect(() => {
+    async function loadReports() {
+      try {
+        const data = await getReports();
+        setReports(data);
+      } catch (error) {
+        console.error('Failed to load reports:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadReports();
+  }, []);
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
@@ -157,6 +86,17 @@ export function ReportsInbox() {
     return matchesSearch && matchesSeverity && matchesStatus;
   });
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#FBEAD2] py-12 px-4 flex items-center justify-center">
+        <div className="text-center">
+          <RefreshCw className="w-12 h-12 text-[#E09B3D] animate-spin mx-auto mb-4" />
+          <p className="text-[#023D50] text-lg">Loading reports...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#FBEAD2] py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
@@ -182,7 +122,7 @@ export function ReportsInbox() {
             { icon: FileText, label: 'Total Reports', value: reports.length, color: 'text-[#E09B3D]' },
             { icon: AlertTriangle, label: 'New Reports', value: reports.filter(r => r.status === 'new').length, color: 'text-[#16A085]' },
             { icon: AlertTriangle, label: 'Critical/High', value: reports.filter(r => r.severity === 'critical' || r.severity === 'high').length, color: 'text-[#DC5037]' },
-            { icon: Calendar, label: 'This Week', value: reports.filter(r => new Date(r.generatedDate) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)).length, color: 'text-[#E09B3D]' },
+            { icon: Calendar, label: 'This Week', value: reports.filter(r => new Date(r.generated_date) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)).length, color: 'text-[#E09B3D]' },
           ].map((stat, i) => (
             <motion.div 
               key={i}
@@ -284,7 +224,7 @@ export function ReportsInbox() {
                 <div className="flex items-start justify-between gap-4 mb-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2 flex-wrap">
-                      <span className="text-lg font-semibold text-[#023D50]">{report.id}</span>
+                      <span className="text-lg font-semibold text-[#023D50]">RPT-{report.incident_id}</span>
                       <span className={`px-3 py-1 rounded-full text-xs font-medium uppercase border ${getSeverityColor(report.severity)}`}>
                         {report.severity}
                       </span>
@@ -304,15 +244,15 @@ export function ReportsInbox() {
                     <div className="flex items-center gap-6 text-sm text-[#456A77] flex-wrap">
                       <div className="flex items-center gap-2">
                         <Calendar className="w-4 h-4" />
-                        <span>Generated: {formatDate(report.generatedDate)}</span>
+                        <span>Generated: {formatDate(report.generated_date)}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <AlertTriangle className="w-4 h-4" />
-                        <span>{report.incidentCount} incident{report.incidentCount !== 1 ? 's' : ''}</span>
+                        <span>{report.event_count} event{report.event_count !== 1 ? 's' : ''}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <Clock className="w-4 h-4" />
-                        <span>{report.threatLevel}</span>
+                        <span>IP: {report.source_ip}</span>
                       </div>
                     </div>
                   </div>
@@ -329,11 +269,11 @@ export function ReportsInbox() {
 
                 <div className="flex items-center gap-3 pt-4 border-t border-[#D4C4B0]">
                   <Link
-                    to="/report/engineer"
+                    to={`/reports/${report.id}`}
                     className="flex items-center gap-2 px-4 py-2 bg-white border border-[#D4C4B0] hover:bg-[#E09B3D] hover:border-[#E09B3D] hover:text-white rounded-lg text-sm transition-all group/btn"
                   >
                     <FileText className="w-4 h-4" />
-                    Technical Report
+                    View Report
                     <ChevronRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
                   </Link>
                 </div>

@@ -10,6 +10,8 @@ import { Dashboard } from "./components/Dashboard";
 import { About } from "./components/About";
 import { EngineerReport } from "./components/EngineerReport";
 import { ReportsInbox } from "./components/ReportsInbox";
+import { ReportDetail } from "./components/ReportDetail";
+import { ToastProvider } from "./contexts/ToastContext";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -23,22 +25,25 @@ function ScrollToTop() {
 
 export default function App() {
   return (
-    <Router>
-      <ScrollToTop />
-      <div className="min-h-screen bg-[#FBEAD2] text-[#023D50] relative">
-        <Navbar />
-        <div className="relative z-10">
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/reports" element={<ReportsInbox />} />
-            <Route
-              path="/report/engineer"
-              element={<EngineerReport />}
-            />
-          </Routes>
+    <ToastProvider>
+      <Router>
+        <ScrollToTop />
+        <div className="min-h-screen bg-[#FBEAD2] text-[#023D50] relative">
+          <Navbar />
+          <div className="relative z-10">
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/reports" element={<ReportsInbox />} />
+              <Route path="/reports/:reportId" element={<ReportDetail />} />
+              <Route
+                path="/report/engineer"
+                element={<EngineerReport />}
+              />
+            </Routes>
+          </div>
         </div>
-      </div>
-    </Router>
+      </Router>
+    </ToastProvider>
   );
 }
