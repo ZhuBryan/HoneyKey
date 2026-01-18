@@ -1,35 +1,29 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
+import { api, type Incident } from "./lib/api";
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [incidents, setIncidents] = useState<Incident[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    api.listIncidents()
+      .then(setIncidents)
+      .catch((e) => setError(String(e)));
+  }, []);
+
+  if (error) return <pre>Error: {error}</pre>;
+  if (!incidents) return <div>Loading incidents…</div>;
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + Jay</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div style={{ padding: 16 }}>
+      <h1>HoneyKey Incidents</h1>
+      <ul>
+        {incidents.map((i) => (
+          <li key={i.id}>
+            #{i.id} {i.source_ip} ({i.event_count} events)
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 }
-
-export default App
