@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Shield, AlertTriangle, Activity, Clock, ChevronRight, Cpu, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { motion } from 'motion/react';
+import { motion } from "framer-motion";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 60 },
