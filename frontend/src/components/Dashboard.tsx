@@ -1,20 +1,21 @@
-import { useState } from 'react';
-import { Shield, AlertTriangle, Activity, Clock, ChevronRight, Cpu, Zap } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useState } from "react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { Shield, AlertTriangle, Cpu, Zap, Activity, Clock, ChevronRight } from "lucide-react";
+
+const viewport = { margin: "-50px" } as const;
 
 const fadeInUp = {
   initial: { opacity: 0, y: 60 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { margin: "-50px" },
-  transition: { duration: 0.5, ease: "easeOut" }
-};
+} as const;
+
+const fadeInUpTransition = { duration: 0.5, ease: "easeOut" } as const;
 
 const staggerContainer = {
   initial: {},
   whileInView: { transition: { staggerChildren: 0.08 } },
-  viewport: { margin: "-50px" }
-};
+} as const;
 
 export function Dashboard() {
   const [activeIncidents] = useState(2); // Change this to 0 to show "no incidents" state
@@ -97,8 +98,12 @@ export function Dashboard() {
         </motion.div>
 
         {/* AI Monitoring Status */}
-        <motion.div 
-          {...fadeInUp}
+        <motion.div
+          variants={fadeInUp}
+          initial="initial"
+          whileInView="whileInView"
+          viewport={viewport}
+          transition={fadeInUpTransition}
           className="bg-white rounded-2xl p-8 mb-8 border border-[#D4C4B0]"
         >
           <div className="flex items-start gap-6">
@@ -172,9 +177,9 @@ export function Dashboard() {
             },
             { icon: Activity, value: totalIncidents.toString(), label: 'Total Incidents (24h)', color: 'bg-[#023D50]/10 text-[#023D50]' },
             { icon: Clock, value: lastIncidentTime.split(' ')[0], label: lastIncidentTime.split(' ').slice(1).join(' '), color: 'bg-[#F39C12]/10 text-[#F39C12]' },
-          ].map((stat, i) => (
+          ].map((stat) => (
             <motion.div 
-              key={i}
+              key={stat.value}
               variants={fadeInUp}
               whileHover={{ y: -4, transition: { duration: 0.2 } }}
               className="bg-white rounded-xl p-6 border border-[#D4C4B0] hover:border-[#E09B3D] transition-all cursor-default"
@@ -192,7 +197,11 @@ export function Dashboard() {
 
         {/* Recent Activity */}
         <motion.div 
-          {...fadeInUp}
+          variants={fadeInUp}
+          initial="initial"
+          whileInView="whileInView"
+          viewport={viewport}
+          transition={fadeInUpTransition}
           className="bg-white rounded-xl p-8 border border-[#D4C4B0]"
         >
           <div className="flex items-center justify-between mb-6">
@@ -235,7 +244,7 @@ export function Dashboard() {
                 status: 'resolved',
                 ip: '198.51.100.89'
               },
-            ].map((incident, i) => (
+            ].map((incident) => (
               <motion.div
                 key={incident.id}
                 variants={fadeInUp}

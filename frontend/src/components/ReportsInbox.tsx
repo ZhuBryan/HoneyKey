@@ -3,6 +3,19 @@ import { Search, Filter, Calendar, FileText, AlertTriangle, Download, Clock, Che
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
+interface Report {
+  id: string;
+  title: string;
+  generatedDate: string;
+  incidentDate: string;
+  severity: 'critical' | 'high' | 'medium' | 'low';
+  status: 'new' | 'reviewed' | 'archived';
+  incidentCount: number;
+  threatLevel: string;
+  type: 'both' | 'engineer' | 'executive';
+  summary: string;
+}
+
 const fadeInUp = {
   initial: { opacity: 0, y: 60 },
   whileInView: { opacity: 1, y: 0 },
@@ -261,7 +274,7 @@ export function ReportsInbox() {
               <p className="text-[#456A77]">Try adjusting your search or filter criteria</p>
             </motion.div>
           ) : (
-            filteredReports.map((report, index) => (
+            filteredReports.map((report) => (
               <motion.div 
                 key={report.id}
                 variants={fadeInUp}

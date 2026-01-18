@@ -2,7 +2,7 @@ import { Shield, AlertTriangle, Brain } from 'lucide-react';
 
 export function Hero() {
   return (
-    <section className="honeycomb-bg py-20 px-4 sm:px-6 lg:px-8">
+    <section className="py-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="text-center max-w-4xl mx-auto">
           <div className="inline-flex items-center gap-2 bg-[#E09B3D]/10 border border-[#E09B3D]/30 rounded-full px-4 py-2 mb-6">
