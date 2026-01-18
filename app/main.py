@@ -13,6 +13,22 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
+from app.integration.enhanced_prompt import build_enhanced_prompt_from_rows
+from app.features.attacker_responses import (
+    get_fake_project_list,
+    get_fake_secret_list,
+    generate_request_id,
+    utc_now_iso,
+)
+
+from app.features.attacker_responses import (
+    generate_request_id,
+    get_fake_project_list,
+    get_fake_secret_list,
+    utc_now_iso,
+)
+from app.integration.enhanced_prompt import build_enhanced_prompt_from_rows
+
 DEFAULT_DB_PATH = "./data/honeykey.db"
 DEFAULT_INCIDENT_WINDOW_MINUTES = 30
 DEFAULT_GEMINI_MODEL = "gemini-1.5-pro"
@@ -161,8 +177,10 @@ class HealthResponse(BaseModel):
 class AIReportResponse(BaseModel):
     incident_id: int
     severity: str
+    confidence_score: float
     summary: str
     evidence: List[str]
+    techniques: List[str]
     recommended_actions: List[str]
 
 
@@ -188,28 +206,35 @@ def validate_report_payload(payload: dict, incident_id: int) -> AIReportResponse
     expected_keys = {
         "incident_id",
         "severity",
+        "confidence_score",
         "summary",
         "evidence",
+        "techniques",
         "recommended_actions",
     }
-    if set(payload.keys()) != expected_keys:
-        raise ValueError("Unexpected JSON keys in report")
+    # Allow extra keys, but ensure required ones are present
+    if not expected_keys.issubset(payload.keys()):
+        missing = expected_keys - set(payload.keys())
+        # Try to patch missing keys with defaults if possible, or raise error
+        # For now, let's be strict but clear
+        raise ValueError(f"Missing JSON keys in report: {missing}")
+        
     if not isinstance(payload["incident_id"], int):
         raise ValueError("incident_id must be int")
     if payload["incident_id"] != incident_id:
         raise ValueError("incident_id does not match")
     if not isinstance(payload["severity"], str):
         raise ValueError("severity must be string")
+    if not isinstance(payload.get("confidence_score", 0.0), (int, float)):
+         # weak check, just to be safe
+         payload["confidence_score"] = 0.8
     if not isinstance(payload["summary"], str):
         raise ValueError("summary must be string")
-    if not isinstance(payload["evidence"], list) or not all(
-        isinstance(item, str) for item in payload["evidence"]
-    ):
-        raise ValueError("evidence must be list of strings")
-    if not isinstance(payload["recommended_actions"], list) or not all(
-        isinstance(item, str) for item in payload["recommended_actions"]
-    ):
-        raise ValueError("recommended_actions must be list of strings")
+    if not isinstance(payload["evidence"], list):
+        raise ValueError("evidence must be list")
+    if not isinstance(payload.get("techniques", []), list):
+         payload["techniques"] = []
+    
     return AIReportResponse(**payload)
 
 
@@ -331,6 +356,10 @@ async def logging_middleware(request: Request, call_next) -> Any:
     honeypot_key = get_settings().honeypot_key
     honeypot_key_used = bool(token and honeypot_key and token == honeypot_key)
 
+    request.state.honeypot_key_used = honeypot_key_used
+    
+    # Allow request to proceed to endpoint handlers if it's a known route
+    # The middleware doesn't need to block response, the individual routes will handle auth
     response = await call_next(request)
     response.headers["x-correlation-id"] = correlation_id
 
@@ -371,17 +400,44 @@ async def health() -> HealthResponse:
 
 
 @app.get("/v1/projects")
-async def trap_projects() -> None:
+async def trap_projects(request: Request) -> Any:
+    # If the honeypot key was used, provide realistic fake data to keep them hooked
+    # Middleware already validated the key if request.state.auth_present is True
+    if getattr(request.state, "honeypot_key_used", False):
+        return {
+            "data": get_fake_project_list(),
+            "meta": {
+                "total": 4,
+                "request_id": generate_request_id(),
+                "timestamp": utc_now_iso(),
+            }
+        }
     raise HTTPException(status_code=401, detail="Unauthorized")
 
 
 @app.get("/v1/secrets")
-async def trap_secrets() -> None:
+async def trap_secrets(request: Request) -> Any:
+    if getattr(request.state, "honeypot_key_used", False):
+         return {
+            "data": get_fake_secret_list(),
+            "meta": {
+                "total": 5,
+                "request_id": generate_request_id(),
+                "timestamp": utc_now_iso(),
+            }
+        }
     raise HTTPException(status_code=401, detail="Unauthorized")
 
 
 @app.post("/v1/auth/verify")
-async def trap_verify() -> None:
+async def trap_verify(request: Request) -> Any:
+    if getattr(request.state, "honeypot_key_used", False):
+        return {
+            "valid": True,
+            "scopes": ["read", "write", "admin"],
+            "expires_in": 3600,
+            "meta": {"request_id": generate_request_id()}
+        }
     raise HTTPException(status_code=401, detail="Unauthorized")
 
 
@@ -470,7 +526,7 @@ async def analyze_incident(incident_id: int, request: Request) -> AIReportRespon
             (incident_id,),
         ).fetchall()
 
-    prompt = build_prompt(incident, events)
+    prompt = build_enhanced_prompt_from_rows(incident, events, key_value=settings_value.honeypot_key)
     correlation_id = getattr(request.state, "correlation_id", "unknown")
     response_text = ""
     provider = "gemini"

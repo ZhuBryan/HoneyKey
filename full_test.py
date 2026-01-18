@@ -8,8 +8,8 @@ import json
 
 # Configuration
 env = os.environ.copy()
-env["GEMINI_API_KEY"] = "AIzaSyBpGrgDFRgT8iDpDyXjLHZa0fshBayIvNo"
-env["GEMINI_MODEL"] = "gemini-flash-latest"
+# env["GEMINI_API_KEY"] = "..." # Set this in your environment or .env file
+# env["GEMINI_MODEL"] = "gemini-flash-latest" 
 env["HONEYPOT_KEY"] = "acme_client_m5n6o7p8q9r0s1t2"
 env["PYTHONUNBUFFERED"] = "1"
 

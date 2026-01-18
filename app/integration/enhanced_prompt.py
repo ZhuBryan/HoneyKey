@@ -234,14 +234,18 @@ Generate a JSON report with this exact structure:
 {{
     "incident_id": {incident_id},
     "severity": "Low|Medium|High|Critical",
+    "confidence_score": 0.0-1.0,
     "summary": "2-3 sentence executive summary",
     "evidence": ["evidence point 1", "evidence point 2", ...],
+    "techniques": ["Technique ID: Name", ...],
     "recommended_actions": ["action 1", "action 2", ...]
 }}
 
 Rules:
 - severity should match the behavioral risk level
+- confidence_score should reflect certainty in the attribution (float)
 - evidence should cite SPECIFIC behavioral observations
+- techniques should list MITRE ATT&CK techniques inferred from behavior (e.g. "T1595: Active Scanning")
 - recommended_actions should be actionable and specific
 - Return ONLY valid JSON, no markdown or code fences
 
@@ -396,7 +400,7 @@ def build_enhanced_prompt_from_rows(
             "method": row["method"],
             "path": row["path"],
             "user_agent": row["user_agent"],
-            "correlation_id": row.get("correlation_id"),
+            "correlation_id": row["correlation_id"],
             "auth_present": bool(row["auth_present"]),
             "honeypot_key_used": bool(row["honeypot_key_used"]),
         }
