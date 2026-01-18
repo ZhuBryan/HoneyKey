@@ -228,11 +228,56 @@ def generate_gemini_report(prompt: str, api_key: str, model: str) -> str:
 def normalize_recommended_actions(actions: List[str]) -> List[str]:
     normalized = []
     for action in actions:
-        if action.startswith("HoneyKey:") or action.startswith("User:"):
+        if action.startswith("HoneyKey:") or action.startswith("You:"):
             normalized.append(action)
+        elif action.startswith("User:"):
+            normalized.append(action.replace("User:", "You:", 1))
         else:
-            normalized.append(f"User: {action}")
+            normalized.append(f"You: {action}")
     return normalized
+
+
+def normalize_report_labels(executive: Optional[str], technical: Optional[str]) -> tuple[str, str]:
+    executive_text = (executive or "").strip()
+    technical_text = (technical or "").strip()
+    if executive_text and not executive_text.lower().startswith("executive report"):
+        executive_text = f"Executive Report: {executive_text}"
+    if technical_text and not technical_text.lower().startswith("technical report"):
+        technical_text = f"Technical Report: {technical_text}"
+    return executive_text, technical_text
+
+
+def reports_are_similar(executive: str, technical: str) -> bool:
+    exec_norm = " ".join(executive.lower().split())
+    tech_norm = " ".join(technical.lower().split())
+    return exec_norm == tech_norm or exec_norm in tech_norm or tech_norm in exec_norm
+
+
+def build_report_fallback(incident: sqlite3.Row, events: list[sqlite3.Row]) -> tuple[str, str]:
+    event_count = len(events)
+    first_ts = events[-1]["ts"] if events else "unknown"
+    last_ts = events[0]["ts"] if events else "unknown"
+    paths = sorted({row["path"] for row in events if row["path"]})[:5]
+    user_agents = sorted({row["user_agent"] for row in events if row["user_agent"]})[:3]
+    executive = (
+        "Executive Report: HoneyKey detected use of a honeypot credential tied to this "
+        f"incident. Activity was observed between {first_ts} and {last_ts} with "
+        f"{event_count} related events. Impact appears contained to the honeypot "
+        "environment; no external systems were modified by HoneyKey. Risk is moderate "
+        "because leaked credentials can indicate broader exposure. HoneyKey provides "
+        "telemetry, incident grouping, and a report; leadership should ensure owners "
+        "review access hygiene and confirm no real credentials were exposed."
+    )
+    technical = (
+        "Technical Report: Incident telemetry shows honeypot key usage with "
+        f"{event_count} events from a single source. Observed window: {first_ts} → {last_ts}. "
+        f"Affected endpoints: {', '.join(paths) if paths else 'unknown'}. "
+        f"User-Agent samples: {', '.join(user_agents) if user_agents else 'unknown'}. "
+        "Likely techniques include credential abuse against protected endpoints; confirm "
+        "authorization boundaries and audit external systems. HoneyKey does not block IPs "
+        "or change perimeter controls."
+    )
+    return executive, technical
 
 
 def store_ai_report(
@@ -283,15 +328,19 @@ def build_prompt(incident: sqlite3.Row, events: list[sqlite3.Row]) -> str:
         "Required keys: incident_id (int), severity (string), summary (string), "
         "evidence (list of strings), recommended_actions (list of strings). "
         "Additive keys allowed: executive_report (string), technical_report (string). "
-        "The executive_report must be plain-English, non-technical, explain impact/risk, "
-        "and state whether activity stayed within the honeypot environment. "
-        "The technical_report must include concrete evidence, metrics (event counts, burstiness, "
-        "enumeration patterns, user-agent observations), and inferred techniques with brief "
-        "explanations. Both reports must be consistent with each other and the evidence. "
+        "The executive_report must be titled 'Executive Report:' and be plain-English, "
+        "decision-oriented, explain impact/risk, likelihood, business relevance, and "
+        "state whether activity stayed within the honeypot environment. "
+        "The technical_report must be titled 'Technical Report:' and include concrete "
+        "evidence, metrics (event counts, timing window, burstiness, enumeration patterns, "
+        "user-agent observations), inferred techniques with brief explanations, and a "
+        "short timeline. Both reports must be consistent with each other and the evidence. "
+        "Avoid MITRE IDs in the executive report; mention that a technical appendix exists. "
+        "Include MITRE technique IDs in the technical report when possible. "
         "Clearly distinguish HoneyKey capabilities (telemetry, grouping, analysis, reports) "
         "from user actions (blocking IPs, revoking creds, firewall/WAF changes, external SIEMs). "
         "Never claim HoneyKey performed external actions. "
-        "Each recommended_actions item must be prefixed with 'HoneyKey:' or 'User:'. "
+        "Each recommended_actions item must be prefixed with 'HoneyKey:' or 'You:'. "
         f"Incident: {json.dumps(incident_payload)}. "
         f"Recent events: {json.dumps(event_payloads)}."
     )
@@ -511,6 +560,19 @@ async def analyze_incident(incident_id: int, request: Request) -> AIReportRespon
                 "recommended_actions": normalize_recommended_actions(
                     report.recommended_actions
                 )
+            }
+        )
+        executive_report, technical_report = normalize_report_labels(
+            report.executive_report, report.technical_report
+        )
+        if not executive_report or not technical_report or reports_are_similar(
+            executive_report, technical_report
+        ):
+            executive_report, technical_report = build_report_fallback(incident, events)
+        report = report.model_copy(
+            update={
+                "executive_report": executive_report,
+                "technical_report": technical_report,
             }
         )
     except Exception as exc:
