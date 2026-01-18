@@ -11,6 +11,7 @@ from typing import Any, AsyncGenerator, Generator, List, Optional
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from app.integration.enhanced_prompt import build_enhanced_prompt_from_rows
@@ -44,7 +45,7 @@ class Settings(BaseModel):
 
 
 def load_settings() -> Settings:
-    load_dotenv(override=True)
+    load_dotenv()
     cors_origins = [
         origin.strip()
         for origin in os.getenv("CORS_ORIGINS", "").split(",")
@@ -143,6 +144,15 @@ def init_db() -> None:
                 report_json TEXT,
                 parse_ok INTEGER NOT NULL,
                 error TEXT
+            )
+            """
+        )
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS blocked_ips (
+                ip TEXT PRIMARY KEY,
+                blocked_at TEXT NOT NULL,
+                reason TEXT
             )
             """
         )
@@ -350,21 +360,23 @@ def find_or_create_incident(conn: sqlite3.Connection, source_ip: str, key_id: st
 async def logging_middleware(request: Request, call_next) -> Any:
     correlation_id = request.headers.get("x-correlation-id") or str(uuid.uuid4())
     request.state.correlation_id = correlation_id
+    
     auth_header = request.headers.get("authorization")
     auth_present = bool(auth_header)
     token = parse_bearer_token(auth_header)
     honeypot_key = get_settings().honeypot_key
     honeypot_key_used = bool(token and honeypot_key and token == honeypot_key)
-
     request.state.honeypot_key_used = honeypot_key_used
     
-    # Allow request to proceed to endpoint handlers if it's a known route
-    # The middleware doesn't need to block response, the individual routes will handle auth
+    client_ip = request.client.host if request.client else None
+
+
     response = await call_next(request)
     response.headers["x-correlation-id"] = correlation_id
 
     now_iso = utc_now().isoformat()
-    client_ip = request.client.host if request.client else None
+    # client_ip already extracted above
+    key_id = "honeypot" if honeypot_key_used else None
     key_id = "honeypot" if honeypot_key_used else None
     with get_db() as conn:
         incident_id = None
