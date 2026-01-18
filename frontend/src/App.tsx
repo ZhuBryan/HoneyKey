@@ -14,7 +14,6 @@ export default function App() {
   if (error) return <pre>Error: {error}</pre>;
   if (!incidents) return <div>Loading incidents…</div>;
 
-export default function App() {
   return (
     <div style={{ padding: 16 }}>
       <h1>HoneyKey Incidents</h1>
