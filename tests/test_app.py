@@ -24,7 +24,9 @@ def create_client(tmp_path):
     module.settings = module.load_settings()
     module.app.state.settings = module.settings
     module.init_db()
-    return TestClient(module.app), db_path, module
+    client = TestClient(module.app)
+    client.__enter__()
+    return client, db_path, module
 
 
 def get_latest_incident_id(db_path):
