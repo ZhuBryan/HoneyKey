@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { ArrowLeft, Terminal, Code, Database, Network, Lock, Activity, Briefcase } from 'lucide-react';
+import { ArrowLeft, Terminal, Code, Database, Network, Lock, Activity } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
@@ -30,14 +30,6 @@ export function EngineerReport() {
           <Link to="/reports" className="inline-flex items-center gap-2 text-[#E09B3D] hover:text-[#D4881C] transition-colors font-medium">
             <ArrowLeft className="w-4 h-4" />
             Back to Reports
-          </Link>
-          
-          <Link 
-            to="/report/executive"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-white border-2 border-[#023D50] hover:bg-[#023D50] hover:text-white rounded-lg text-sm font-medium transition-all text-[#023D50]"
-          >
-            <Briefcase className="w-4 h-4" />
-            Switch to Executive Summary
           </Link>
         </motion.div>
 
@@ -80,84 +72,84 @@ export function EngineerReport() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
               <div>
-                <h3 className="text-sm font-semibold text-amber-500 mb-3 flex items-center gap-2">
+                <h3 className="text-sm font-semibold text-[#E09B3D] mb-3 flex items-center gap-2">
                   <Network className="w-4 h-4" />
                   Network Intelligence
                 </h3>
-                <div className="bg-slate-900/50 rounded-lg p-4 space-y-2 text-sm font-mono">
+                <div className="bg-[#2A2A2A] border border-[#404040] rounded-lg p-4 space-y-2 text-sm font-mono">
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Source IP:</span>
-                    <span className="text-slate-200">185.220.101.47</span>
+                    <span className="text-[#B0B0B0]">Source IP:</span>
+                    <span className="text-[#E8E8E8] font-semibold">185.220.101.47</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400">ASN:</span>
-                    <span className="text-slate-200">AS12389</span>
+                    <span className="text-[#B0B0B0]">ASN:</span>
+                    <span className="text-[#E8E8E8] font-semibold">AS12389</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Location:</span>
-                    <span className="text-slate-200">Moscow, RU</span>
+                    <span className="text-[#B0B0B0]">Location:</span>
+                    <span className="text-[#E8E8E8] font-semibold">Moscow, RU</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400">ISP:</span>
-                    <span className="text-slate-200">VPS Hosting Provider</span>
+                    <span className="text-[#B0B0B0]">ISP:</span>
+                    <span className="text-[#E8E8E8] font-semibold">VPS Hosting Provider</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Reverse DNS:</span>
-                    <span className="text-slate-200">vps-47.example.net</span>
+                    <span className="text-[#B0B0B0]">Reverse DNS:</span>
+                    <span className="text-[#E8E8E8] font-semibold">vps-47.example.net</span>
                   </div>
                 </div>
               </div>
 
               <div>
-                <h3 className="text-sm font-semibold text-amber-500 mb-3 flex items-center gap-2">
+                <h3 className="text-sm font-semibold text-[#E09B3D] mb-3 flex items-center gap-2">
                   <Lock className="w-4 h-4" />
                   Honeypot Details
                 </h3>
-                <div className="bg-slate-900/50 rounded-lg p-4 space-y-2 text-sm font-mono">
+                <div className="bg-[#2A2A2A] border border-[#404040] rounded-lg p-4 space-y-2 text-sm font-mono">
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Key ID:</span>
-                    <span className="text-slate-200">hk_sk_proj_abc123</span>
+                    <span className="text-[#B0B0B0]">Key ID:</span>
+                    <span className="text-[#E8E8E8] font-semibold">hk_sk_proj_abc123</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Type:</span>
-                    <span className="text-slate-200">OpenAI API</span>
+                    <span className="text-[#B0B0B0]">Type:</span>
+                    <span className="text-[#E8E8E8] font-semibold">OpenAI API</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Deployment:</span>
-                    <span className="text-slate-200">GitHub Repo</span>
+                    <span className="text-[#B0B0B0]">Deployment:</span>
+                    <span className="text-[#E8E8E8] font-semibold">GitHub Repo</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Created:</span>
-                    <span className="text-slate-200">2026-01-15T08:20:00Z</span>
+                    <span className="text-[#B0B0B0]">Created:</span>
+                    <span className="text-[#E8E8E8] font-semibold">2026-01-15T08:20:00Z</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Attempts:</span>
-                    <span className="text-red-400 font-bold">47</span>
+                    <span className="text-[#B0B0B0]">Attempts:</span>
+                    <span className="text-[#FF6B6B] font-bold">47</span>
                   </div>
                 </div>
               </div>
             </div>
 
             <div className="mb-6">
-              <h3 className="text-sm font-semibold text-amber-500 mb-3 flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-[#E09B3D] mb-3 flex items-center gap-2">
                 <Activity className="w-4 h-4" />
                 Attack Pattern Analysis
               </h3>
-              <div className="bg-slate-900/50 rounded-lg p-4">
+              <div className="bg-[#2A2A2A] border border-[#404040] rounded-lg p-4">
                 <div className="mb-4">
-                  <div className="text-sm text-slate-400 mb-2">Request Rate Over Time</div>
+                  <div className="text-sm text-[#B0B0B0] mb-2">Request Rate Over Time</div>
                   <div className="flex items-end gap-1 h-24">
                     {[3, 5, 4, 8, 12, 15, 18, 22, 25, 20, 16, 10].map((height, i) => (
-                      <div key={i} className="flex-1 bg-red-500/50 rounded-t" style={{ height: `${height * 3}%` }}></div>
+                      <div key={i} className="flex-1 bg-[#DC5037]/40 rounded-t" style={{ height: `${height * 3}%` }}></div>
                     ))}
                   </div>
-                  <div className="flex justify-between text-xs text-slate-500 mt-1">
+                  <div className="flex justify-between text-xs text-[#B0B0B0] mt-1">
                     <span>14:32</span>
                     <span>14:44</span>
                   </div>
                 </div>
-                <div className="text-sm text-slate-300">
-                  <strong className="text-red-400">Pattern:</strong> Rapid escalation detected. 
+                <div className="text-sm text-[#E8E8E8]">
+                  <strong className="text-[#FF6B6B]">Pattern:</strong> Rapid escalation detected. 
                   Attacker started with probe requests (3/min) and ramped up to aggressive exploitation (25/min). 
                   Behavior consistent with automated scanning tools.
                 </div>
@@ -165,12 +157,12 @@ export function EngineerReport() {
             </div>
 
             <div className="mb-6">
-              <h3 className="text-sm font-semibold text-amber-500 mb-3 flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-[#E09B3D] mb-3 flex items-center gap-2">
                 <Code className="w-4 h-4" />
                 HTTP Request Analysis
               </h3>
-              <div className="bg-slate-900/50 rounded-lg p-4 overflow-x-auto">
-                <pre className="text-xs text-slate-300">
+              <div className="bg-[#2A2A2A] border border-[#3A3A3A] rounded-lg p-4 overflow-x-auto">
+                <pre className="text-xs text-[#E0E0E0]">
 {`POST /v1/chat/completions HTTP/1.1
 Host: api.openai.com
 Authorization: Bearer sk-proj-abc123...xyz789
@@ -186,20 +178,20 @@ User-Agent: python-requests/2.28.1
               </div>
               <div className="mt-3 text-sm space-y-1">
                 <div className="flex items-start gap-2">
-                  <span className="text-red-400 font-bold">⚠</span>
-                  <span className="text-slate-300">
+                  <span className="text-[#DC5037] font-bold">⚠</span>
+                  <span className="text-[#023D50]">
                     <strong>Finding:</strong> User-Agent indicates Python requests library - common in automated scripts
                   </span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <span className="text-red-400 font-bold">⚠</span>
-                  <span className="text-slate-300">
+                  <span className="text-[#DC5037] font-bold">⚠</span>
+                  <span className="text-[#023D50]">
                     <strong>Finding:</strong> No Referer header - suggests direct API access, not web application
                   </span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <span className="text-red-400 font-bold">⚠</span>
-                  <span className="text-slate-300">
+                  <span className="text-[#DC5037] font-bold">⚠</span>
+                  <span className="text-[#023D50]">
                     <strong>Finding:</strong> Consistent request structure across all attempts - automated tool confirmed
                   </span>
                 </div>
@@ -207,30 +199,30 @@ User-Agent: python-requests/2.28.1
             </div>
 
             <div>
-              <h3 className="text-sm font-semibold text-amber-500 mb-3 flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-[#E09B3D] mb-3 flex items-center gap-2">
                 <Database className="w-4 h-4" />
                 Threat Intelligence Correlation
               </h3>
-              <div className="bg-slate-900/50 rounded-lg p-4 space-y-3 text-sm">
+              <div className="bg-[#2A2A2A] border border-[#404040] rounded-lg p-4 space-y-3 text-sm">
                 <div className="flex items-start gap-3">
-                  <span className="text-red-400 font-bold">✗</span>
+                  <span className="text-[#FF6B6B] font-bold">✗</span>
                   <div>
-                    <div className="text-slate-200 font-semibold">IP Reputation: MALICIOUS</div>
-                    <div className="text-slate-400">Listed in 3 threat intelligence feeds (AbuseIPDB, ThreatFox, Blocklist.de)</div>
+                    <div className="text-[#E8E8E8] font-semibold">IP Reputation: MALICIOUS</div>
+                    <div className="text-[#B0B0B0]">Listed in 3 threat intelligence feeds (AbuseIPDB, ThreatFox, Blocklist.de)</div>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <span className="text-red-400 font-bold">✗</span>
+                  <span className="text-[#FF6B6B] font-bold">✗</span>
                   <div>
-                    <div className="text-slate-200 font-semibold">Known Attack Infrastructure</div>
-                    <div className="text-slate-400">ASN associated with 127 previous security incidents in last 30 days</div>
+                    <div className="text-[#E8E8E8] font-semibold">Known Attack Infrastructure</div>
+                    <div className="text-[#B0B0B0]">ASN associated with 127 previous security incidents in last 30 days</div>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <span className="text-amber-400 font-bold">⚠</span>
+                  <span className="text-[#E09B3D] font-bold">⚠</span>
                   <div>
-                    <div className="text-slate-200 font-semibold">Similar Attack Pattern</div>
-                    <div className="text-slate-400">Matches signature of "API-Scraper-2024" campaign tracked by security researchers</div>
+                    <div className="text-[#E8E8E8] font-semibold">Similar Attack Pattern</div>
+                    <div className="text-[#B0B0B0]">Matches signature of "API-Scraper-2024" campaign tracked by security researchers</div>
                   </div>
                 </div>
               </div>
@@ -246,7 +238,7 @@ User-Agent: python-requests/2.28.1
                   MEDIUM SEVERITY - ACTIVE
                 </span>
               </div>
-              <div className="text-right text-sm text-slate-400">
+              <div className="text-right text-sm text-[#B0B0B0]">
                 <div>First Seen: 2026-01-17T12:18:03Z</div>
                 <div>Last Activity: 2026-01-17T12:35:41Z</div>
               </div>
@@ -254,71 +246,71 @@ User-Agent: python-requests/2.28.1
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
               <div>
-                <h3 className="text-sm font-semibold text-amber-500 mb-3 flex items-center gap-2">
+                <h3 className="text-sm font-semibold text-[#E09B3D] mb-3 flex items-center gap-2">
                   <Network className="w-4 h-4" />
                   Network Intelligence
                 </h3>
-                <div className="bg-slate-900/50 rounded-lg p-4 space-y-2 text-sm font-mono">
+                <div className="bg-[#2A2A2A] border border-[#404040] rounded-lg p-4 space-y-2 text-sm font-mono">
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Source IP:</span>
-                    <span className="text-slate-200">103.75.201.12</span>
+                    <span className="text-[#B0B0B0]">Source IP:</span>
+                    <span className="text-[#E8E8E8] font-semibold">103.75.201.12</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400">ASN:</span>
-                    <span className="text-slate-200">AS4134</span>
+                    <span className="text-[#B0B0B0]">ASN:</span>
+                    <span className="text-[#E8E8E8] font-semibold">AS4134</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Location:</span>
-                    <span className="text-slate-200">Shanghai, CN</span>
+                    <span className="text-[#B0B0B0]">Location:</span>
+                    <span className="text-[#E8E8E8] font-semibold">Shanghai, CN</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400">ISP:</span>
-                    <span className="text-slate-200">China Telecom</span>
+                    <span className="text-[#B0B0B0]">ISP:</span>
+                    <span className="text-[#E8E8E8] font-semibold">China Telecom</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Reverse DNS:</span>
-                    <span className="text-slate-200">None</span>
+                    <span className="text-[#B0B0B0]">Reverse DNS:</span>
+                    <span className="text-[#E8E8E8] font-semibold">None</span>
                   </div>
                 </div>
               </div>
 
               <div>
-                <h3 className="text-sm font-semibold text-amber-500 mb-3 flex items-center gap-2">
+                <h3 className="text-sm font-semibold text-[#E09B3D] mb-3 flex items-center gap-2">
                   <Lock className="w-4 h-4" />
                   Honeypot Details
                 </h3>
-                <div className="bg-slate-900/50 rounded-lg p-4 space-y-2 text-sm font-mono">
+                <div className="bg-[#2A2A2A] border border-[#404040] rounded-lg p-4 space-y-2 text-sm font-mono">
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Key ID:</span>
-                    <span className="text-slate-200">hk_ghp_honeypot_def456</span>
+                    <span className="text-[#B0B0B0]">Key ID:</span>
+                    <span className="text-[#E8E8E8] font-semibold">hk_ghp_honeypot_def456</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Type:</span>
-                    <span className="text-slate-200">GitHub PAT</span>
+                    <span className="text-[#B0B0B0]">Type:</span>
+                    <span className="text-[#E8E8E8] font-semibold">GitHub PAT</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Deployment:</span>
-                    <span className="text-slate-200">Public Gist</span>
+                    <span className="text-[#B0B0B0]">Deployment:</span>
+                    <span className="text-[#E8E8E8] font-semibold">Public Gist</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Created:</span>
-                    <span className="text-slate-200">2026-01-16T11:45:00Z</span>
+                    <span className="text-[#B0B0B0]">Created:</span>
+                    <span className="text-[#E8E8E8] font-semibold">2026-01-16T11:45:00Z</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Attempts:</span>
-                    <span className="text-amber-400 font-bold">23</span>
+                    <span className="text-[#B0B0B0]">Attempts:</span>
+                    <span className="text-[#FFB347] font-bold">23</span>
                   </div>
                 </div>
               </div>
             </div>
 
             <div className="mb-6">
-              <h3 className="text-sm font-semibold text-amber-500 mb-3 flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-[#E09B3D] mb-3 flex items-center gap-2">
                 <Code className="w-4 h-4" />
                 GitHub API Request Sample
               </h3>
-              <div className="bg-slate-900/50 rounded-lg p-4 overflow-x-auto">
-                <pre className="text-xs text-slate-300">
+              <div className="bg-[#2A2A2A] border border-[#3A3A3A] rounded-lg p-4 overflow-x-auto">
+                <pre className="text-xs text-[#E0E0E0]">
 {`GET /user/repos HTTP/1.1
 Host: api.github.com
 Authorization: token ghp_honeypot...def456
@@ -326,30 +318,30 @@ Accept: application/vnd.github.v3+json
 User-Agent: GitHubCLI/2.32.0`}
                 </pre>
               </div>
-              <div className="mt-3 text-sm text-slate-300">
-                <strong className="text-amber-400">Analysis:</strong> Attacker attempted to enumerate repositories, 
+              <div className="mt-3 text-sm text-[#E8E8E8]">
+                <strong className="text-[#E09B3D]">Analysis:</strong> Attacker attempted to enumerate repositories, 
                 check permissions, and access organization data. Moderate sophistication - used legitimate GitHub CLI tool.
               </div>
             </div>
 
             <div>
-              <h3 className="text-sm font-semibold text-amber-500 mb-3 flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-[#E09B3D] mb-3 flex items-center gap-2">
                 <Database className="w-4 h-4" />
                 Threat Assessment
               </h3>
-              <div className="bg-slate-900/50 rounded-lg p-4 space-y-3 text-sm">
+              <div className="bg-[#2A2A2A] border border-[#404040] rounded-lg p-4 space-y-3 text-sm">
                 <div className="flex items-start gap-3">
-                  <span className="text-amber-400 font-bold">⚠</span>
+                  <span className="text-[#E09B3D] font-bold">⚠</span>
                   <div>
-                    <div className="text-slate-200 font-semibold">IP Reputation: SUSPICIOUS</div>
-                    <div className="text-slate-400">No previous reports, but hosting provider commonly used for malicious activity</div>
+                    <div className="text-[#E8E8E8] font-semibold">IP Reputation: SUSPICIOUS</div>
+                    <div className="text-[#B0B0B0]">No previous reports, but hosting provider commonly used for malicious activity</div>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <span className="text-green-400 font-bold">✓</span>
+                  <span className="text-[#4ECDC4] font-bold">✓</span>
                   <div>
-                    <div className="text-slate-200 font-semibold">Activity Stopped After 23 Attempts</div>
-                    <div className="text-slate-400">May indicate attacker realized key was non-functional or honeypot</div>
+                    <div className="text-[#E8E8E8] font-semibold">Activity Stopped After 23 Attempts</div>
+                    <div className="text-[#B0B0B0]">May indicate attacker realized key was non-functional or honeypot</div>
                   </div>
                 </div>
               </div>
@@ -357,20 +349,20 @@ User-Agent: GitHubCLI/2.32.0`}
           </div>
 
           {/* Incident 3 */}
-          <div className="incident-card rounded-xl p-8 opacity-60">
+          <div className="incident-card rounded-xl p-8 opacity-75">
             <div className="flex items-start justify-between mb-4">
               <div>
                 <h2 className="text-2xl font-bold mb-1">INC-2026-003</h2>
-                <span className="px-3 py-1 rounded-full text-xs font-medium uppercase bg-slate-500/20 text-slate-400 inline-block">
+                <span className="px-3 py-1 rounded-full text-xs font-medium uppercase bg-[#16A085]/20 text-[#16A085] inline-block">
                   MEDIUM SEVERITY - RESOLVED
                 </span>
               </div>
-              <div className="text-right text-sm text-slate-400">
+              <div className="text-right text-sm text-[#456A77]">
                 <div>First Seen: 2026-01-17T09:45:22Z</div>
                 <div>Resolved: 2026-01-17T09:58:10Z</div>
               </div>
             </div>
-            <div className="text-sm text-slate-400">
+            <div className="text-sm text-[#023D50]">
               <p><strong>Summary:</strong> 12 attempts from São Paulo, Brazil (198.51.100.89) using AWS honeypot key. 
               Low-sophistication attack. Activity ceased after automated rate limiting. No further action required.</p>
             </div>
@@ -380,14 +372,14 @@ User-Agent: GitHubCLI/2.32.0`}
         {/* Recommendations */}
         <div className="incident-card rounded-xl p-8 mt-6">
           <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-            <Terminal className="w-6 h-6 text-amber-500" />
+            <Terminal className="w-6 h-6 text-[#E09B3D]" />
             Technical Recommendations
           </h2>
           
           <div className="space-y-4 text-sm">
-            <div className="bg-slate-900/50 rounded-lg p-4">
-              <h3 className="font-semibold text-amber-500 mb-2">1. Immediate Actions</h3>
-              <ul className="space-y-1 text-slate-300 ml-4">
+            <div className="bg-[#2A2A2A] border border-[#404040] rounded-lg p-4">
+              <h3 className="font-semibold text-[#E09B3D] mb-2">1. Immediate Actions</h3>
+              <ul className="space-y-1 text-[#E8E8E8] ml-4">
                 <li>• Block source IP 185.220.101.47 at firewall level</li>
                 <li>• Add ASN12389 to monitoring watchlist for elevated scrutiny</li>
                 <li>• Audit all legitimate API keys created between 2026-01-10 and 2026-01-17</li>
@@ -395,9 +387,9 @@ User-Agent: GitHubCLI/2.32.0`}
               </ul>
             </div>
 
-            <div className="bg-slate-900/50 rounded-lg p-4">
-              <h3 className="font-semibold text-amber-500 mb-2">2. Detection Enhancement</h3>
-              <ul className="space-y-1 text-slate-300 ml-4">
+            <div className="bg-[#2A2A2A] border border-[#404040] rounded-lg p-4">
+              <h3 className="font-semibold text-[#E09B3D] mb-2">2. Detection Enhancement</h3>
+              <ul className="space-y-1 text-[#E8E8E8] ml-4">
                 <li>• Implement YARA rules for Python requests library detection in API traffic</li>
                 <li>• Deploy additional honeypot keys in Confluence, Slack archives, and Docker registries</li>
                 <li>• Enable enhanced logging for all API authentication attempts</li>
@@ -405,10 +397,10 @@ User-Agent: GitHubCLI/2.32.0`}
               </ul>
             </div>
 
-            <div className="bg-slate-900/50 rounded-lg p-4">
-              <h3 className="font-semibold text-amber-500 mb-2">3. Code-Level Mitigations</h3>
-              <div className="bg-slate-950 rounded p-3 mt-2 overflow-x-auto">
-                <pre className="text-xs text-slate-300">
+            <div className="bg-[#2A2A2A] border border-[#404040] rounded-lg p-4">
+              <h3 className="font-semibold text-[#E09B3D] mb-2">3. Code-Level Mitigations</h3>
+              <div className="bg-[#1F1F1F] border border-[#353535] rounded p-3 mt-2 overflow-x-auto">
+                <pre className="text-xs text-[#E0E0E0]">
 {`# Add to API key validation middleware
 def check_honeypot_key(api_key: str) -> bool:
     """Check if key matches honeypot pattern"""
@@ -421,9 +413,9 @@ def check_honeypot_key(api_key: str) -> bool:
               </div>
             </div>
 
-            <div className="bg-slate-900/50 rounded-lg p-4">
-              <h3 className="font-semibold text-amber-500 mb-2">4. Long-term Strategy</h3>
-              <ul className="space-y-1 text-slate-300 ml-4">
+            <div className="bg-[#2A2A2A] border border-[#404040] rounded-lg p-4">
+              <h3 className="font-semibold text-[#E09B3D] mb-2">4. Long-term Strategy</h3>
+              <ul className="space-y-1 text-[#E8E8E8] ml-4">
                 <li>• Implement mandatory API key rotation policy (90 days maximum lifetime)</li>
                 <li>• Deploy pre-commit hooks to prevent key commits to version control</li>
                 <li>• Establish automated key scanning in CI/CD pipelines</li>
@@ -433,15 +425,15 @@ def check_honeypot_key(api_key: str) -> bool:
           </div>
         </div>
 
-        <div className="mt-8 bg-slate-900/30 border border-slate-800 rounded-lg p-4 text-sm text-slate-400">
+        <div className="mt-8 bg-[#2A2A2A] border border-[#404040] rounded-lg p-4 text-sm text-[#E8E8E8]">
           <p className="font-mono">
-            <span className="text-amber-500">$</span> Report generated by HoneyKey Detection Engine v2.1.0
+            <span className="text-[#E09B3D]">$</span> Report generated by HoneyKey Detection Engine v2.1.0
           </p>
           <p className="font-mono mt-1">
-            <span className="text-amber-500">$</span> AI Analysis Model: GPT-4 Security Analyst Agent
+            <span className="text-[#E09B3D]">$</span> AI Analysis Model: GPT-4 Security Analyst Agent
           </p>
           <p className="font-mono mt-1">
-            <span className="text-amber-500">$</span> For questions, contact: security-ops@honeykey.io
+            <span className="text-[#E09B3D]">$</span> For questions, contact: security-ops@honeykey.io
           </p>
         </div>
       </div>

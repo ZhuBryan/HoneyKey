@@ -20,7 +20,7 @@ export function HowItWorks() {
     {
       icon: FileText,
       title: 'Generate Reports',
-      description: 'Automatically create tailored security reports for executives and engineers with actionable insights.',
+      description: 'Automatically create detailed security reports with actionable insights and threat analysis.',
     },
   ];
 

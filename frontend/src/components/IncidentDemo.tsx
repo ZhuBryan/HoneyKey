@@ -88,13 +88,6 @@ export function IncidentDemo() {
           
           <div className="flex gap-3">
             <Link 
-              to="/report/executive"
-              className="px-4 py-2 bg-white border border-[#D4C4B0] hover:border-[#E09B3D] hover:bg-[#FFF8F0] rounded-lg text-sm transition-colors flex items-center gap-2 text-[#023D50]"
-            >
-              Executive Summary
-              <ChevronRight className="w-4 h-4" />
-            </Link>
-            <Link 
               to="/report/engineer"
               className="px-4 py-2 bg-[#E09B3D] hover:bg-[#D4881C] rounded-lg text-sm font-medium transition-colors flex items-center gap-2 text-white"
             >

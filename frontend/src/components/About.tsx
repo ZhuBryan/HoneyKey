@@ -6,20 +6,13 @@ const fadeInUp = {
   initial: { opacity: 0, y: 60 },
   whileInView: { opacity: 1, y: 0 },
   viewport: { margin: "-100px" },
-  transition: { duration: 0.6, ease: "easeOut" }
+  transition: { duration: 0.6 }
 };
 
 const staggerContainer = {
   initial: {},
   whileInView: { transition: { staggerChildren: 0.1 } },
   viewport: { margin: "-100px" }
-};
-
-const fadeIn = {
-  initial: { opacity: 0 },
-  whileInView: { opacity: 1 },
-  viewport: { margin: "-100px" },
-  transition: { duration: 0.8, ease: "easeOut" }
 };
 
 export function About() {
@@ -218,7 +211,7 @@ export function About() {
                 icon: FileText,
                 number: '04',
                 title: 'Get Reports',
-                description: 'Receive actionable insights for both technical teams and executives.'
+                description: 'Receive detailed actionable security insights and threat analysis.'
               }
             ].map((step, i) => (
               <motion.div 

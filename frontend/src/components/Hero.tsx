@@ -49,8 +49,7 @@ export function Hero() {
               </div>
               <h3 className="text-lg font-semibold mb-2 text-[#023D50]">AI Analysis</h3>
               <p className="text-[#456A77]">
-                Automatically generate comprehensive security reports for both technical teams 
-                and executive stakeholders.
+                Automatically generate comprehensive security reports with detailed threat analysis and actionable insights.
               </p>
             </div>
           </div>

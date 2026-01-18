@@ -12,7 +12,7 @@ interface Report {
   status: 'new' | 'reviewed' | 'archived';
   incidentCount: number;
   threatLevel: string;
-  type: 'both' | 'engineer' | 'executive';
+  type: 'engineer';
   summary: string;
 }
 
@@ -44,7 +44,7 @@ export function ReportsInbox() {
       status: 'new',
       incidentCount: 3,
       threatLevel: 'Active Threats',
-      type: 'both',
+      type: 'engineer',
       summary: 'Three unauthorized access attempts detected across multiple honeypot keys. Two incidents remain active with high-severity threat actors.',
     },
     {
@@ -56,7 +56,7 @@ export function ReportsInbox() {
       status: 'reviewed',
       incidentCount: 7,
       threatLevel: 'Contained',
-      type: 'both',
+      type: 'engineer',
       summary: 'Detected coordinated scanning activity targeting GitHub PAT tokens. All attempts blocked successfully.',
     },
     {
@@ -80,7 +80,7 @@ export function ReportsInbox() {
       status: 'reviewed',
       incidentCount: 1,
       threatLevel: 'Neutralized',
-      type: 'both',
+      type: 'engineer',
       summary: 'Sophisticated attack on OpenAI honeypot key with advanced evasion techniques. Attacker profile created and shared with threat intelligence feeds.',
     },
     {
@@ -92,7 +92,7 @@ export function ReportsInbox() {
       status: 'reviewed',
       incidentCount: 12,
       threatLevel: 'Informational',
-      type: 'executive',
+      type: 'engineer',
       summary: 'Weekly aggregated report showing honeypot effectiveness metrics and ROI analysis.',
     },
     {
@@ -328,27 +328,14 @@ export function ReportsInbox() {
                 </div>
 
                 <div className="flex items-center gap-3 pt-4 border-t border-[#D4C4B0]">
-                  {report.type === 'both' || report.type === 'executive' ? (
-                    <Link
-                      to="/report/executive"
-                      className="flex items-center gap-2 px-4 py-2 bg-white border border-[#D4C4B0] hover:bg-[#E09B3D] hover:border-[#E09B3D] hover:text-white rounded-lg text-sm transition-all group/btn"
-                    >
-                      <FileText className="w-4 h-4" />
-                      Executive Report
-                      <ChevronRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-                    </Link>
-                  ) : null}
-                  
-                  {report.type === 'both' || report.type === 'engineer' ? (
-                    <Link
-                      to="/report/engineer"
-                      className="flex items-center gap-2 px-4 py-2 bg-white border border-[#D4C4B0] hover:bg-[#E09B3D] hover:border-[#E09B3D] hover:text-white rounded-lg text-sm transition-all group/btn"
-                    >
-                      <FileText className="w-4 h-4" />
-                      Technical Report
-                      <ChevronRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-                    </Link>
-                  ) : null}
+                  <Link
+                    to="/report/engineer"
+                    className="flex items-center gap-2 px-4 py-2 bg-white border border-[#D4C4B0] hover:bg-[#E09B3D] hover:border-[#E09B3D] hover:text-white rounded-lg text-sm transition-all group/btn"
+                  >
+                    <FileText className="w-4 h-4" />
+                    Technical Report
+                    <ChevronRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                  </Link>
                 </div>
               </motion.div>
             ))

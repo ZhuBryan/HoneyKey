@@ -6,7 +6,6 @@ import {
 import { Navbar } from "./components/Navbar";
 import { Dashboard } from "./components/Dashboard";
 import { About } from "./components/About";
-import { ExecutiveReport } from "./components/ExecutiveReport";
 import { EngineerReport } from "./components/EngineerReport";
 import { ReportsInbox } from "./components/ReportsInbox";
 
@@ -20,10 +19,6 @@ export default function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/about" element={<About />} />
             <Route path="/reports" element={<ReportsInbox />} />
-            <Route
-              path="/report/executive"
-              element={<ExecutiveReport />}
-            />
             <Route
               path="/report/engineer"
               element={<EngineerReport />}
